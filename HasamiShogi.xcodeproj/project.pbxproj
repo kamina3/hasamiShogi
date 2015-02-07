@@ -15,8 +15,25 @@
 		841CEEFB1A85A73400DAE656 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 841CEEFA1A85A73400DAE656 /* Images.xcassets */; };
 		841CEEFE1A85A73400DAE656 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 841CEEFC1A85A73400DAE656 /* LaunchScreen.xib */; };
 		841CEF0A1A85A73400DAE656 /* HasamiShogiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841CEF091A85A73400DAE656 /* HasamiShogiTests.swift */; };
-		841CEF151A85A92000DAE656 /* img in Resources */ = {isa = PBXBuildFile; fileRef = 841CEF141A85A92000DAE656 /* img */; };
-		841CEF171A85A92800DAE656 /* wav in Resources */ = {isa = PBXBuildFile; fileRef = 841CEF161A85A92800DAE656 /* wav */; };
+		845E29AE1A85AD8C0035AB5E /* masu_hover.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A11A85AD8C0035AB5E /* masu_hover.png */; };
+		845E29AF1A85AD8C0035AB5E /* masu.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A21A85AD8C0035AB5E /* masu.png */; };
+		845E29B01A85AD8C0035AB5E /* 00_masu.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A31A85AD8C0035AB5E /* 00_masu.png */; };
+		845E29B11A85AD8C0035AB5E /* koma_to_hover.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A41A85AD8C0035AB5E /* koma_to_hover.png */; };
+		845E29B21A85AD8C0035AB5E /* 00_size.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A51A85AD8C0035AB5E /* 00_size.png */; };
+		845E29B31A85AD8C0035AB5E /* koma_ho_r.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A61A85AD8C0035AB5E /* koma_ho_r.png */; };
+		845E29B41A85AD8C0035AB5E /* koma_ho_hover_r.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A71A85AD8C0035AB5E /* koma_ho_hover_r.png */; };
+		845E29B51A85AD8C0035AB5E /* koma_to_r.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A81A85AD8C0035AB5E /* koma_to_r.png */; };
+		845E29B61A85AD8C0035AB5E /* koma_to_hover_r.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29A91A85AD8C0035AB5E /* koma_to_hover_r.png */; };
+		845E29B71A85AD8C0035AB5E /* koma_ho_hover.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29AA1A85AD8C0035AB5E /* koma_ho_hover.png */; };
+		845E29B81A85AD8C0035AB5E /* koma_ho.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29AB1A85AD8C0035AB5E /* koma_ho.png */; };
+		845E29B91A85AD8C0035AB5E /* koma_to.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29AC1A85AD8C0035AB5E /* koma_to.png */; };
+		845E29BA1A85AD8C0035AB5E /* ban.png in Resources */ = {isa = PBXBuildFile; fileRef = 845E29AD1A85AD8C0035AB5E /* ban.png */; };
+		845E29C01A85AD970035AB5E /* get.wav in Resources */ = {isa = PBXBuildFile; fileRef = 845E29BB1A85AD970035AB5E /* get.wav */; };
+		845E29C11A85AD970035AB5E /* senteaction.wav in Resources */ = {isa = PBXBuildFile; fileRef = 845E29BC1A85AD970035AB5E /* senteaction.wav */; };
+		845E29C21A85AD970035AB5E /* gamefinish.wav in Resources */ = {isa = PBXBuildFile; fileRef = 845E29BD1A85AD970035AB5E /* gamefinish.wav */; };
+		845E29C31A85AD970035AB5E /* goteaction.wav in Resources */ = {isa = PBXBuildFile; fileRef = 845E29BE1A85AD970035AB5E /* goteaction.wav */; };
+		845E29C41A85AD970035AB5E /* cannotput.wav in Resources */ = {isa = PBXBuildFile; fileRef = 845E29BF1A85AD970035AB5E /* cannotput.wav */; };
+		845E29C61A85B9C40035AB5E /* HasamiShogi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E29C51A85B9C40035AB5E /* HasamiShogi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,8 +59,25 @@
 		841CEF031A85A73400DAE656 /* HasamiShogiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HasamiShogiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		841CEF081A85A73400DAE656 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		841CEF091A85A73400DAE656 /* HasamiShogiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HasamiShogiTests.swift; sourceTree = "<group>"; };
-		841CEF141A85A92000DAE656 /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; name = img; path = HasamiShogi/img; sourceTree = "<group>"; };
-		841CEF161A85A92800DAE656 /* wav */ = {isa = PBXFileReference; lastKnownFileType = folder; name = wav; path = HasamiShogi/wav; sourceTree = "<group>"; };
+		845E29A11A85AD8C0035AB5E /* masu_hover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = masu_hover.png; sourceTree = "<group>"; };
+		845E29A21A85AD8C0035AB5E /* masu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = masu.png; sourceTree = "<group>"; };
+		845E29A31A85AD8C0035AB5E /* 00_masu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 00_masu.png; sourceTree = "<group>"; };
+		845E29A41A85AD8C0035AB5E /* koma_to_hover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = koma_to_hover.png; sourceTree = "<group>"; };
+		845E29A51A85AD8C0035AB5E /* 00_size.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 00_size.png; sourceTree = "<group>"; };
+		845E29A61A85AD8C0035AB5E /* koma_ho_r.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = koma_ho_r.png; sourceTree = "<group>"; };
+		845E29A71A85AD8C0035AB5E /* koma_ho_hover_r.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = koma_ho_hover_r.png; sourceTree = "<group>"; };
+		845E29A81A85AD8C0035AB5E /* koma_to_r.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = koma_to_r.png; sourceTree = "<group>"; };
+		845E29A91A85AD8C0035AB5E /* koma_to_hover_r.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = koma_to_hover_r.png; sourceTree = "<group>"; };
+		845E29AA1A85AD8C0035AB5E /* koma_ho_hover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = koma_ho_hover.png; sourceTree = "<group>"; };
+		845E29AB1A85AD8C0035AB5E /* koma_ho.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = koma_ho.png; sourceTree = "<group>"; };
+		845E29AC1A85AD8C0035AB5E /* koma_to.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = koma_to.png; sourceTree = "<group>"; };
+		845E29AD1A85AD8C0035AB5E /* ban.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ban.png; sourceTree = "<group>"; };
+		845E29BB1A85AD970035AB5E /* get.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = get.wav; sourceTree = "<group>"; };
+		845E29BC1A85AD970035AB5E /* senteaction.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = senteaction.wav; sourceTree = "<group>"; };
+		845E29BD1A85AD970035AB5E /* gamefinish.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gamefinish.wav; sourceTree = "<group>"; };
+		845E29BE1A85AD970035AB5E /* goteaction.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = goteaction.wav; sourceTree = "<group>"; };
+		845E29BF1A85AD970035AB5E /* cannotput.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cannotput.wav; sourceTree = "<group>"; };
+		845E29C51A85B9C40035AB5E /* HasamiShogi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasamiShogi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +128,7 @@
 				841CEEFA1A85A73400DAE656 /* Images.xcassets */,
 				841CEEFC1A85A73400DAE656 /* LaunchScreen.xib */,
 				841CEEED1A85A73400DAE656 /* Supporting Files */,
+				845E29C51A85B9C40035AB5E /* HasamiShogi.swift */,
 			);
 			path = HasamiShogi;
 			sourceTree = "<group>";
@@ -126,10 +161,44 @@
 		841CEF131A85A91100DAE656 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				841CEF161A85A92800DAE656 /* wav */,
-				841CEF141A85A92000DAE656 /* img */,
+				845E29A01A85AD7A0035AB5E /* wav */,
+				845E299F1A85AD6B0035AB5E /* img */,
 			);
 			name = Resource;
+			sourceTree = "<group>";
+		};
+		845E299F1A85AD6B0035AB5E /* img */ = {
+			isa = PBXGroup;
+			children = (
+				845E29A11A85AD8C0035AB5E /* masu_hover.png */,
+				845E29A21A85AD8C0035AB5E /* masu.png */,
+				845E29A31A85AD8C0035AB5E /* 00_masu.png */,
+				845E29A41A85AD8C0035AB5E /* koma_to_hover.png */,
+				845E29A51A85AD8C0035AB5E /* 00_size.png */,
+				845E29A61A85AD8C0035AB5E /* koma_ho_r.png */,
+				845E29A71A85AD8C0035AB5E /* koma_ho_hover_r.png */,
+				845E29A81A85AD8C0035AB5E /* koma_to_r.png */,
+				845E29A91A85AD8C0035AB5E /* koma_to_hover_r.png */,
+				845E29AA1A85AD8C0035AB5E /* koma_ho_hover.png */,
+				845E29AB1A85AD8C0035AB5E /* koma_ho.png */,
+				845E29AC1A85AD8C0035AB5E /* koma_to.png */,
+				845E29AD1A85AD8C0035AB5E /* ban.png */,
+			);
+			name = img;
+			path = HasamiShogi/img;
+			sourceTree = "<group>";
+		};
+		845E29A01A85AD7A0035AB5E /* wav */ = {
+			isa = PBXGroup;
+			children = (
+				845E29BB1A85AD970035AB5E /* get.wav */,
+				845E29BC1A85AD970035AB5E /* senteaction.wav */,
+				845E29BD1A85AD970035AB5E /* gamefinish.wav */,
+				845E29BE1A85AD970035AB5E /* goteaction.wav */,
+				845E29BF1A85AD970035AB5E /* cannotput.wav */,
+			);
+			name = wav;
+			path = HasamiShogi/wav;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,12 +281,28 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				841CEF151A85A92000DAE656 /* img in Resources */,
+				845E29C11A85AD970035AB5E /* senteaction.wav in Resources */,
+				845E29C21A85AD970035AB5E /* gamefinish.wav in Resources */,
+				845E29C31A85AD970035AB5E /* goteaction.wav in Resources */,
+				845E29B01A85AD8C0035AB5E /* 00_masu.png in Resources */,
+				845E29B41A85AD8C0035AB5E /* koma_ho_hover_r.png in Resources */,
+				845E29B61A85AD8C0035AB5E /* koma_to_hover_r.png in Resources */,
+				845E29B21A85AD8C0035AB5E /* 00_size.png in Resources */,
+				845E29B11A85AD8C0035AB5E /* koma_to_hover.png in Resources */,
+				845E29B71A85AD8C0035AB5E /* koma_ho_hover.png in Resources */,
 				841CEEFE1A85A73400DAE656 /* LaunchScreen.xib in Resources */,
 				841CEEFB1A85A73400DAE656 /* Images.xcassets in Resources */,
-				841CEF171A85A92800DAE656 /* wav in Resources */,
+				845E29B91A85AD8C0035AB5E /* koma_to.png in Resources */,
+				845E29B31A85AD8C0035AB5E /* koma_ho_r.png in Resources */,
+				845E29B81A85AD8C0035AB5E /* koma_ho.png in Resources */,
+				845E29AE1A85AD8C0035AB5E /* masu_hover.png in Resources */,
+				845E29BA1A85AD8C0035AB5E /* ban.png in Resources */,
 				841CEEF21A85A73400DAE656 /* GameScene.sks in Resources */,
 				841CEEF91A85A73400DAE656 /* Main.storyboard in Resources */,
+				845E29C01A85AD970035AB5E /* get.wav in Resources */,
+				845E29C41A85AD970035AB5E /* cannotput.wav in Resources */,
+				845E29AF1A85AD8C0035AB5E /* masu.png in Resources */,
+				845E29B51A85AD8C0035AB5E /* koma_to_r.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +321,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				841CEEF41A85A73400DAE656 /* GameScene.swift in Sources */,
+				845E29C61A85B9C40035AB5E /* HasamiShogi.swift in Sources */,
 				841CEEF61A85A73400DAE656 /* GameViewController.swift in Sources */,
 				841CEEF01A85A73400DAE656 /* AppDelegate.swift in Sources */,
 			);
@@ -431,6 +517,7 @@
 				841CEF0F1A85A73400DAE656 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		841CEF101A85A73400DAE656 /* Build configuration list for PBXNativeTarget "HasamiShogiTests" */ = {
 			isa = XCConfigurationList;
@@ -439,6 +526,7 @@
 				841CEF121A85A73400DAE656 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
