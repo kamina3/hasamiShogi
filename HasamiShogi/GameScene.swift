@@ -116,7 +116,7 @@ class GameScene: SKScene {
         {
             for j in 0...8
             {
-                let index = hShogi.getIndexAtXY(i, y: j)
+                let index = hShogi[i, j]
                 if index != -1
                 {
                     komas[index].hidden = false
@@ -216,7 +216,7 @@ class GameScene: SKScene {
     
     func setCandidateTile(x :Int, y :Int) -> Void
     {
-        let spriteIndex = hShogi.getIndexAtXY(x, y: y)
+        let spriteIndex = hShogi[x, y]
         if spriteIndex != -1 && hShogi.canPlay(spriteIndex)
         {
             
