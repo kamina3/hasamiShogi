@@ -99,19 +99,8 @@ class HasamiShogi {
         for v:(Int, Int) in vec
         {
             // 境界チェック
-            if ((0 < (newX + v.0) && (newX + v.1) < 9  &&
-                 0 < (newY + v.0) && (newY + v.1) < 9) &&
-                (0 < (newX + v.0 * 2) && (newX + v.1 * 2) < 9 &&
-                 0 < (newY + v.0 * 2) && (newY + v.1 * 2) < 9))
-            {
-                if(!isFriend(me, x: newX + v.0, y: newY + v.1)
-                    && isFriend(me, x: newX + v.0 * 2, y: newY + v.1 * 2)
-                    && self[newX + v.0, newY + v.1] != -1)  // となりにコマが存在する
-                {
-                    died.append( self[newX + v.0, newY + v.1] )
-                    self[newX + v.0, newY + v.1] = -1
-                }
-            }
+            died += getDiedIndex((newX, newY), vec:v)
+            
         }
         if(turn == Turn.P1){
             friend += died.count
@@ -121,6 +110,43 @@ class HasamiShogi {
             turn = Turn.P1
         }
         return died
+    }
+    
+    func getDiedIndex(orgPoint:(Int, Int), vec:(Int, Int)) -> [Int]
+    {
+        var died:[Int] = [Int]()
+        var curPoint = orgPoint
+        var orgIdx = self[orgPoint.0, orgPoint.1]
+        while !isOutOfRange(curPoint)
+        {
+            curPoint = (curPoint.0 + vec.0, curPoint.1 + vec.1)
+            if !isFriend(orgIdx, x: curPoint.0, y: curPoint.1) && self[curPoint.0, curPoint.1] != -1
+            {
+                died.append(self[curPoint.0, curPoint.1])
+            }else if isFriend(orgIdx, x: curPoint.0, y: curPoint.1){
+                break
+            }else{
+                died = [Int]()
+                break
+            }
+        }
+        return died
+    }
+    
+    func getDiedIndex2() -> [Int]
+    {
+        //ライン上じゃない場合の判定...
+        return [Int]()
+    }
+    
+    func isOutOfRange(pos:(Int, Int)) -> Bool
+    {
+        let idx = pos.0 + pos.1 * 9
+        if idx >= 0 && idx < 81
+        {
+            return false
+        }
+        return true
     }
     
 
