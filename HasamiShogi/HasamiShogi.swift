@@ -23,6 +23,7 @@ class HasamiShogi {
     }
     
     var winFlag:Bool = false
+    var tmpWinOrLose:Judge = Judge.Playing
     var winOrLose:Judge = Judge.Playing
     var board:[Int] = [Int](count: 81, repeatedValue: -1)
     var friend:Int = 0
@@ -31,21 +32,42 @@ class HasamiShogi {
     
     init ()
     {
+        initializeData()
+    }
+    
+    func initializeData() -> Void
+    {
         for i in 0...8
         {
             board[i] = i
             board[72+i] = i+9
         }
+        
+        for i in 1...7
+        {
+            for j in 0...8
+            {
+                board[i * 9 + j] = -1
+            }
+        }
+        friend = 0
+        enemy = 0
+        winOrLose = Judge.Playing
+        tmpWinOrLose = Judge.Playing
+        winFlag = false
+        turn = Turn.Friend
+        
+        return
     }
     
     func moveTo(x:Int, y:Int, newX:Int, newY:Int) -> Bool
     {
         //移動判定は前でやってるのでここでやらない
-//        if hasKoma(x, y: y) == -1
+//        if exist(x, y: y) == -1
 //        {
 //            return false
 //        }
-//        if hasKoma(newX, y: newY) != -1
+//        if exist(newX, y: newY) != -1
 //        {
 //            return false
 //        }
@@ -57,7 +79,7 @@ class HasamiShogi {
     func moveAndGetDiedIndexes(x:Int, y:Int, newX:Int, newY:Int) -> [Int]
     {
         moveTo(x, y: y, newX: newX, newY: newY)
-        var me = hasKoma(newX, y: newY)
+        var me = exist(newX, y: newY)
         var died:[Int] = [Int]()
         let vec = [(1, 0), (-1, 0), (0, 1), (0, -1)]
         
@@ -71,9 +93,9 @@ class HasamiShogi {
             {
                 if(!isFriend(me, x: newX + v.0, y: newY + v.1)
                     && isFriend(me, x: newX + v.0*2, y: newY + v.1*2)
-                    && hasKoma(newX + v.0, y:newY + v.1) != -1)  // となりにコマが存在する
+                    && exist(newX + v.0, y:newY + v.1) != -1)  // となりにコマが存在する
                 {
-                    died.append( hasKoma(newX+v.0, y: newY+v.1) )
+                    died.append( exist(newX+v.0, y: newY+v.1) )
                     board[(newX+v.0) + (newY+v.1)*9] = -1
                 }
             }
@@ -88,10 +110,15 @@ class HasamiShogi {
         return died
     }
     
-    func hasKoma(x:Int, y:Int) -> Int
+    func exist(x:Int, y:Int) -> Int
     {
-        NSLog("x:%d y:%d ->%d", x, y, board[x + y*9])
-        return board[x + y*9]
+        let index = x + y*9
+        if index > 0 && index <= 81
+        {
+            NSLog("x:%d y:%d ->%d", x, y, board[x + y*9])
+            return board[x + y*9]
+        }
+        return -1
     }
     
     //勝敗判定
@@ -116,7 +143,7 @@ class HasamiShogi {
             {
                 
                 winFlag = true
-                winOrLose = friend > enemy ? Judge.Win : Judge.Lose
+                tmpWinOrLose = friend > enemy ? Judge.Win : Judge.Lose
             }
             return Judge.Playing
         }else{
@@ -124,9 +151,10 @@ class HasamiShogi {
             if score_d >= 3
             {
                 let newWinOrLose = friend > enemy ? Judge.Win : Judge.Lose
-                if newWinOrLose == winOrLose
+                if newWinOrLose == tmpWinOrLose
                 {
-                    return newWinOrLose
+                    winOrLose = tmpWinOrLose
+                    return tmpWinOrLose
                 }
             } else {
                 winFlag = false
@@ -150,7 +178,7 @@ class HasamiShogi {
     
     func getCandidatePositions(x :Int, y: Int) -> [(Int, Int)]
     {
-        if hasKoma(x, y: y) == -1
+        if exist(x, y: y) == -1
         {
             return []
         }
@@ -160,7 +188,7 @@ class HasamiShogi {
         var i = 1
         while x+i < 9
         {
-            if hasKoma(x+i, y: y) == -1
+            if exist(x+i, y: y) == -1
             {
                 pos_ary.append (x+i, y)
             }else{
@@ -171,7 +199,7 @@ class HasamiShogi {
         i = 1
         while x-i >= 0
         {
-            if hasKoma(x-i, y: y) == -1
+            if exist(x-i, y: y) == -1
             {
                 pos_ary.append (x-i, y)
             }else{
@@ -182,7 +210,7 @@ class HasamiShogi {
         i = 1
         while y+i < 9
         {
-            if hasKoma(x, y: y+i) == -1
+            if exist(x, y: y+i) == -1
             {
                 pos_ary.append (x, y+i)
             }else{
@@ -193,7 +221,7 @@ class HasamiShogi {
         i = 1
         while y-i >= 0
         {
-            if hasKoma(x, y: y-i) == -1
+            if exist(x, y: y-i) == -1
             {
                 pos_ary.append (x, y-i)
             }else{
@@ -208,7 +236,7 @@ class HasamiShogi {
     
     func isFriend(me:Int, x:Int, y:Int) -> Bool
     {
-        let koma = hasKoma(x, y: y)
+        let koma = exist(x, y: y)
         if (me >= 0 && me < 9 && koma >= 0 && koma < 9)
         {
             return true

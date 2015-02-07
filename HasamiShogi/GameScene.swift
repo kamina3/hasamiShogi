@@ -19,12 +19,14 @@ class GameScene: SKScene {
     let hShogi:HasamiShogi = HasamiShogi()
     var selected_index:Int = -1
     var candidate_pos:[(Int, Int)] = [(Int, Int)]()
+    var initFlag:Bool = false
     
     // UIオブジェクト
     var komas:[SKSpriteNode?] = [SKSpriteNode?](count: 18, repeatedValue: nil)
     var candidate_panel:[SKSpriteNode] = [SKSpriteNode]()
     var friendLabel:SKLabelNode! = SKLabelNode(text: "先手: 0")
     var enemyLabel:SKLabelNode! = SKLabelNode(text: "後手: 0")
+    var turnLabel:SKLabelNode = SKLabelNode(text: "自分")
     var resultLabel:SKLabelNode = SKLabelNode(text: "")
     
     override func didMoveToView(view: SKView) {
@@ -41,19 +43,7 @@ class GameScene: SKScene {
         bg.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
         addChild(bg);
         
-        for i in 0...8
-        {
-            NSLog("add %d", i);
-            let koma = createKomaSprite("koma_ho.png", x: i, y: 0)
-            addChild(koma)
-            komas[i] = koma
-        }
-        for i in 0...8
-        {
-            let koma_r = createKomaSprite("koma_to_r.png", x: i, y: 8)
-            addChild(koma_r)
-            komas[i+9] = koma_r
-        }
+        initializeData()
         
         friendLabel.position = CGPointMake(self.frame.size.width / 3.0, 10*scale)
         friendLabel.fontColor = SKColor.blackColor()
@@ -64,12 +54,58 @@ class GameScene: SKScene {
         enemyLabel.fontSize = 48
         addChild(enemyLabel)
         
+        turnLabel.position = CGPointMake(self.frame.size.width / 2.0, 10*scale)
+        turnLabel.fontColor = SKColor.blackColor()
+        turnLabel.fontSize = 52
+        addChild(turnLabel)
+        
+        resultLabel.fontColor = SKColor.blackColor()
+        resultLabel.fontSize = 64 * scale
+        resultLabel.position = CGPointMake(self.frame.width/2, self.frame.height/2)
+        resultLabel.zPosition = 5
+        addChild(resultLabel)
+        
+        updateStatus()
+        
+    }
+    
+    func initializeData() -> Void
+    {
+        for spr in komas
+        {
+            spr?.removeFromParent()
+        }
+        
+        for i in 0...8
+        {
+            let koma = createKomaSprite("koma_ho.png", x: i, y: 0)
+            addChild(koma)
+            komas[i] = koma
+        }
+        for i in 0...8
+        {
+            let koma_r = createKomaSprite("koma_to_r.png", x: i, y: 8)
+            addChild(koma_r)
+            komas[i+9] = koma_r
+        }
+        hShogi.initializeData()
+        resultLabel.hidden = true
+        initFlag = false
+        updateStatus()
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
+        if initFlag
+        {
+            initFlag = false
+            initializeData()
+            return
+        }
         if hShogi.winOrLose != HasamiShogi.Judge.Playing
         {
+            initFlag = true
+            resultLabel.text = "最初からやる？"
             return
         }
         for touch:AnyObject in touches {
@@ -110,6 +146,7 @@ class GameScene: SKScene {
     {
         friendLabel.text = "先手: " + String(hShogi.friend)
         enemyLabel.text = "後手: " + String(hShogi.enemy)
+        turnLabel.text = hShogi.turn == HasamiShogi.Turn.Friend ? "あなた" : "相手"
         return
     }
     
@@ -153,7 +190,7 @@ class GameScene: SKScene {
     
     func setCandidateTile(x :Int, y :Int) -> Void
     {
-        let spriteIndex = hShogi.hasKoma(x, y: y)
+        let spriteIndex = hShogi.exist(x, y: y)
         if spriteIndex != -1 && hShogi.canPlay(spriteIndex)
         {
             
@@ -186,20 +223,39 @@ class GameScene: SKScene {
         {
             if p.0 == pos_on_board.0 && p.1 == pos_on_board.1
             {
-                komas[selected_index]?.position = getMasuPosition(p.0, y: p.1)
+//                komas[selected_index]?.position = getMasuPosition(p.0, y: p.1)
+                let moveP =  getMasuPosition(p.0, y: p.1)
+                let orgP = komas[selected_index]!.position
+                let moveVec = CGVectorMake(moveP.x - orgP.x, moveP.y - orgP.y)
+                let moveAct = SKAction.moveBy(moveVec, duration: 0.5)
+                komas[selected_index]?.runAction(moveAct)
+                
                 let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].0 , y: candidate_pos[0].1, newX: p.0, newY: p.1)
+                // sound
+                let soundFileName = hShogi.turn != HasamiShogi.Turn.Friend ? "senteaction.wav" : "goteaction.wav"
+                let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
+                runAction(soundAct)
+                if died.count > 0
+                {
+                    let soundFileName = "get.wav"
+                    let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
+                    runAction(soundAct)
+                }
                 for dIndex in died
                 {
-                    if dIndex == -1 {continue} //どっか処理甘い　-1が飛んでくる
+//                    if dIndex == -1 {continue} //どっか処理甘い　-1が飛んでくる
                     komas[dIndex]?.removeFromParent()
                     komas[dIndex] = nil
                 }
                 checkFinishGame()
                 clearBoardState()
-                break
+                return
             }
         }
-        // 見つからない場合は何もしない
+        // 動かせる場所をタップしてない
+        let soundFileName = "cannotput.wav"
+        let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
+        runAction(soundAct)
         return;
     }
     
@@ -219,11 +275,10 @@ class GameScene: SKScene {
         {
             let txt:String = (flag == HasamiShogi.Judge.Win) ? "勝ち！" : "負け..."
             resultLabel.text = "あなたの" + txt
-            resultLabel.fontColor = SKColor.blackColor()
-            resultLabel.fontSize = 64 * scale
-            resultLabel.position = CGPointMake(self.frame.width/2, self.frame.height/2)
-            resultLabel.zPosition = 5
-            addChild(resultLabel)
+            resultLabel.hidden = false
+            let soundFileName = "gamefinish.wav"
+            let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
+            runAction(soundAct)
         }
     }
     
