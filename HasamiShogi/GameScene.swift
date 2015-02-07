@@ -29,6 +29,13 @@ class GameScene: SKScene {
     var turnLabel:SKLabelNode = SKLabelNode(text: "自分")
     var resultLabel:SKLabelNode = SKLabelNode(text: "")
     
+    // サウンドオブジェクト
+    let p1SoundAct = SKAction.playSoundFileNamed("senteaction.wav", waitForCompletion: false)
+    let p2SoundAct = SKAction.playSoundFileNamed("goteaction.wav", waitForCompletion: false)
+    let finishSAct = SKAction.playSoundFileNamed("gamefinish.wav", waitForCompletion: false)
+    let cannotSAct = SKAction.playSoundFileNamed("cannotput.wav", waitForCompletion: false)
+    let getSAct    = SKAction.playSoundFileNamed("get.wav", waitForCompletion: false)
+    
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
 
@@ -232,14 +239,11 @@ class GameScene: SKScene {
                 
                 let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].0 , y: candidate_pos[0].1, newX: p.0, newY: p.1)
                 // sound
-                let soundFileName = hShogi.turn != HasamiShogi.Turn.P1 ? "senteaction.wav" : "goteaction.wav"
-                let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
+                let soundAct = hShogi.turn != HasamiShogi.Turn.P1 ? p1SoundAct : p2SoundAct
                 runAction(soundAct)
                 if died.count > 0
                 {
-                    let soundFileName = "get.wav"
-                    let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
-                    runAction(soundAct)
+                    runAction(getSAct)
                 }
                 for dIndex in died
                 {
@@ -253,9 +257,7 @@ class GameScene: SKScene {
             }
         }
         // 動かせる場所をタップしてない
-        let soundFileName = "cannotput.wav"
-        let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
-        runAction(soundAct)
+        runAction(cannotSAct)
         return;
     }
     
@@ -276,10 +278,13 @@ class GameScene: SKScene {
             let txt:String = (flag == HasamiShogi.Judge.P1Win) ? "勝ち！" : "負け..."
             resultLabel.text = "あなたの" + txt
             resultLabel.hidden = false
-            let soundFileName = "gamefinish.wav"
-            let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
-            runAction(soundAct)
+            playSound(finishSAct)
         }
+    }
+// sound
+    func playSound(soundAct:SKAction) -> Void
+    {
+        runAction(soundAct)
     }
     
     func getPositionOnBorad(pos:CGPoint) -> (Int, Int)? {
