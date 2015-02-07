@@ -17,7 +17,18 @@ class HasamiShogi {
         case Lose
     }
     
+    enum Turn{
+        case Friend
+        case Enemy
+    }
+    
+    var winFlag:Bool = false
+    var winOrLose:Judge = Judge.Playing
     var board:[Int] = [Int](count: 81, repeatedValue: -1)
+    var friend:Int = 0
+    var enemy:Int = 0
+    var turn:Turn = Turn.Friend
+    
     init ()
     {
         for i in 0...8
@@ -58,12 +69,21 @@ class HasamiShogi {
                 (0 < (newX + v.0*2) && (newX + v.1*2) < 9 &&
                  0 < (newY + v.0*2) && (newY + v.1*2) < 9))
             {
-                if(!isFriend(me, x: newX + v.0, y: newY + v.1) && isFriend(me, x: newX + v.0*2, y: newY + v.1*2))
+                if(!isFriend(me, x: newX + v.0, y: newY + v.1)
+                    && isFriend(me, x: newX + v.0*2, y: newY + v.1*2)
+                    && hasKoma(newX + v.0, y:newY + v.1) != -1)  // となりにコマが存在する
                 {
                     died.append( hasKoma(newX+v.0, y: newY+v.1) )
                     board[(newX+v.0) + (newY+v.1)*9] = -1
                 }
             }
+        }
+        if(turn == Turn.Friend){
+            friend += died.count
+            turn = Turn.Enemy
+        }else{
+            enemy += died.count
+            turn = Turn.Friend
         }
         return died
     }
@@ -77,8 +97,55 @@ class HasamiShogi {
     //勝敗判定
     func judge() -> Judge
     {
-     
-        return HasamiShogi.Judge.Playing
+        if friend >= 5
+        {
+            winOrLose = Judge.Win
+            return Judge.Win
+        }
+        if enemy >= 5
+        {
+            winOrLose = Judge.Lose
+            return Judge.Lose
+        }
+        
+        // 3枚差分判定
+        if !winFlag
+        {
+            let score_d = abs(friend - enemy)
+            if score_d >= 3
+            {
+                
+                winFlag = true
+                winOrLose = friend > enemy ? Judge.Win : Judge.Lose
+            }
+            return Judge.Playing
+        }else{
+            let score_d = abs(friend - enemy)
+            if score_d >= 3
+            {
+                let newWinOrLose = friend > enemy ? Judge.Win : Judge.Lose
+                if newWinOrLose == winOrLose
+                {
+                    return newWinOrLose
+                }
+            } else {
+                winFlag = false
+            }
+            return Judge.Playing
+        }
+    }
+    
+    func canPlay(komaIndex:Int) -> Bool
+    {
+        if (turn == Turn.Friend && komaIndex >= 0 && komaIndex < 9)
+        {
+            return true
+        }
+        if (turn == Turn.Enemy && komaIndex >= 9 && komaIndex < 18)
+        {
+            return true
+        }
+        return false
     }
     
     func getCandidatePositions(x :Int, y: Int) -> [(Int, Int)]

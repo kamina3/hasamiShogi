@@ -23,8 +23,9 @@ class GameScene: SKScene {
     // UIオブジェクト
     var komas:[SKSpriteNode?] = [SKSpriteNode?](count: 18, repeatedValue: nil)
     var candidate_panel:[SKSpriteNode] = [SKSpriteNode]()
-    var myResLabel:SKLabelNode! = SKLabelNode(text: "先手: 0")
-    var enemyResLabel:SKLabelNode! = SKLabelNode(text: "後手: 0")
+    var friendLabel:SKLabelNode! = SKLabelNode(text: "先手: 0")
+    var enemyLabel:SKLabelNode! = SKLabelNode(text: "後手: 0")
+    var resultLabel:SKLabelNode = SKLabelNode(text: "")
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -53,55 +54,63 @@ class GameScene: SKScene {
             addChild(koma_r)
             komas[i+9] = koma_r
         }
+        
+        friendLabel.position = CGPointMake(self.frame.size.width / 3.0, 10*scale)
+        friendLabel.fontColor = SKColor.blackColor()
+        friendLabel.fontSize = 48
+        addChild(friendLabel)
+        enemyLabel.position = CGPointMake(self.frame.size.width * 2.0 / 3.0, 10*scale)
+        enemyLabel.fontColor = SKColor.blackColor()
+        enemyLabel.fontSize = 48
+        addChild(enemyLabel)
+        
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
-        
+        if hShogi.winOrLose != HasamiShogi.Judge.Playing
+        {
+            return
+        }
         for touch:AnyObject in touches {
             var loc = touch.locationInNode(self)
             NSLog("%@ %@", loc.x, loc.y)
-            if selected_index != -1
-            {
-                if let pos_on_board = getPositionOnBorad(loc){
+            if let pos_on_board = getPositionOnBorad(loc){
+                if selected_index != -1
+                {
                     NSLog("%d, %d", pos_on_board.0, pos_on_board.1)
-                    var movePoint:(Int, Int)? = nil
-                    for p in candidate_pos
+                    // 選択状態で同じものタップすると状態クリア
+                    if (candidate_pos[0].0 == pos_on_board.0 && candidate_pos[0].1 == pos_on_board.1)
                     {
-                        if p.0 == pos_on_board.0 && p.1 == pos_on_board.1
-                        {
-                            movePoint = p
-                            break
-                        }
+                        clearBoardState()
+                        return
                     }
-                    //swiftっぽくない...
-                    if movePoint != nil
-                    {
-                        komas[selected_index]?.position = getMasuPosition(movePoint!.0, y: movePoint!.1)
-                        let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].0 , y: candidate_pos[0].1, newX: movePoint!.0, newY: movePoint!.1)
-                        for dIndex in died
-                        {
-                            komas[dIndex]?.removeFromParent()
-                            komas[dIndex] = nil
-                        }
-                    }
-                }
-                clearBoardState()
-            }else{
-                clearBoardState()
-                if let pos_on_board = getPositionOnBorad(loc){
-                    NSLog("%d, %d", pos_on_board.0, pos_on_board.1)
-                    setCandidateTile(pos_on_board.0, y: pos_on_board.1)
+                    
+                    // 動かす
+                    moveKoma(pos_on_board)
+                    
+                }else{
+                    //タップした場所にコマがあれば選択状態に変化
+                        NSLog("%d, %d", pos_on_board.0, pos_on_board.1)
+                        setCandidateTile(pos_on_board.0, y: pos_on_board.1)
+                    
                 }
             }
             
         }
-        
+        updateStatus()
     }
 
    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+    }
+    
+    func updateStatus() -> Void
+    {
+        friendLabel.text = "先手: " + String(hShogi.friend)
+        enemyLabel.text = "後手: " + String(hShogi.enemy)
+        return
     }
     
     func createKomaSprite(spriteName: String, x: Int, y: Int) -> SKSpriteNode
@@ -126,7 +135,7 @@ class GameScene: SKScene {
         if (selected_index < 9){
             textureName = "koma_ho.png"
         }else{
-            textureName = "koma_ho_r.png"
+            textureName = "koma_to_r.png"
         }
         k?.texture = SKTexture(imageNamed: textureName)
         selected_index = -1
@@ -145,13 +154,14 @@ class GameScene: SKScene {
     func setCandidateTile(x :Int, y :Int) -> Void
     {
         let spriteIndex = hShogi.hasKoma(x, y: y)
-        if spriteIndex != -1
+        if spriteIndex != -1 && hShogi.canPlay(spriteIndex)
         {
+            
             var textureName:String
             if (spriteIndex < 9){
                 textureName = "koma_ho_hover.png"
             }else{
-                textureName = "koma_ho_hover_r.png"
+                textureName = "koma_to_hover_r.png"
             }
             komas[spriteIndex]?.texture = SKTexture(imageNamed: textureName)
             self.selected_index = spriteIndex
@@ -170,6 +180,29 @@ class GameScene: SKScene {
         }
     }
     
+    func moveKoma(pos_on_board: (Int, Int)) -> Void
+    {
+        for p in candidate_pos
+        {
+            if p.0 == pos_on_board.0 && p.1 == pos_on_board.1
+            {
+                komas[selected_index]?.position = getMasuPosition(p.0, y: p.1)
+                let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].0 , y: candidate_pos[0].1, newX: p.0, newY: p.1)
+                for dIndex in died
+                {
+                    if dIndex == -1 {continue} //どっか処理甘い　-1が飛んでくる
+                    komas[dIndex]?.removeFromParent()
+                    komas[dIndex] = nil
+                }
+                checkFinishGame()
+                clearBoardState()
+                break
+            }
+        }
+        // 見つからない場合は何もしない
+        return;
+    }
+    
     func getMasuPosition(x: Int, y: Int) -> CGPoint
     {
         let _x:CGFloat = CGFloat(x)
@@ -177,6 +210,21 @@ class GameScene: SKScene {
         let xpos:CGFloat = ((_x * masu_w) + masu_huchi + masu_w / 2.0) * scale
         let ypos:CGFloat = ((_y * masu_w) + masu_huchi + masu_w / 2.0) * scale
         return CGPointMake(xpos, ypos)
+    }
+    
+    func checkFinishGame() -> Void
+    {
+        let flag:HasamiShogi.Judge = hShogi.judge()
+        if flag != HasamiShogi.Judge.Playing
+        {
+            let txt:String = (flag == HasamiShogi.Judge.Win) ? "勝ち！" : "負け..."
+            resultLabel.text = "あなたの" + txt
+            resultLabel.fontColor = SKColor.blackColor()
+            resultLabel.fontSize = 64 * scale
+            resultLabel.position = CGPointMake(self.frame.width/2, self.frame.height/2)
+            resultLabel.zPosition = 5
+            addChild(resultLabel)
+        }
     }
     
     func getPositionOnBorad(pos:CGPoint) -> (Int, Int)? {
