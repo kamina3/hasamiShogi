@@ -49,7 +49,7 @@ class GameScene: SKScene {
         }
         for i in 0...8
         {
-            let koma_r = createKomaSprite("koma_ho_r.png", x: i, y: 8)
+            let koma_r = createKomaSprite("koma_to_r.png", x: i, y: 8)
             addChild(koma_r)
             komas[i+9] = koma_r
         }
@@ -77,8 +77,13 @@ class GameScene: SKScene {
                     //swiftっぽくない...
                     if movePoint != nil
                     {
-                        hShogi.moveTo(candidate_pos[0].0 , y: candidate_pos[0].1, newX: movePoint!.0, newY: movePoint!.1)
                         komas[selected_index]?.position = getMasuPosition(movePoint!.0, y: movePoint!.1)
+                        let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].0 , y: candidate_pos[0].1, newX: movePoint!.0, newY: movePoint!.1)
+                        for dIndex in died
+                        {
+                            komas[dIndex]?.removeFromParent()
+                            komas[dIndex] = nil
+                        }
                     }
                 }
                 clearBoardState()
@@ -107,11 +112,6 @@ class GameScene: SKScene {
         sprite.position = getMasuPosition(x, y: y)
         sprite.zPosition = 3
         return sprite
-    }
-    
-    func updateBoardState() -> Void
-    {
-        
     }
     
     func clearBoardState() -> Void

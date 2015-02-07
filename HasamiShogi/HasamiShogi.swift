@@ -29,17 +29,43 @@ class HasamiShogi {
     
     func moveTo(x:Int, y:Int, newX:Int, newY:Int) -> Bool
     {
-        if hasKoma(x, y: y) == -1
-        {
-            return false
-        }
-        if hasKoma(newX, y: newY) != -1
-        {
-            return false
-        }
+        //移動判定は前でやってるのでここでやらない
+//        if hasKoma(x, y: y) == -1
+//        {
+//            return false
+//        }
+//        if hasKoma(newX, y: newY) != -1
+//        {
+//            return false
+//        }
         board[newX + newY * 9] = board[x + y * 9]
         board[x + y * 9] = -1
         return true
+    }
+    
+    func moveAndGetDiedIndexes(x:Int, y:Int, newX:Int, newY:Int) -> [Int]
+    {
+        moveTo(x, y: y, newX: newX, newY: newY)
+        var me = hasKoma(newX, y: newY)
+        var died:[Int] = [Int]()
+        let vec = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        
+        for v:(Int, Int) in vec
+        {
+            // 境界チェック
+            if ((0 < (newX + v.0) && (newX + v.1) < 9  &&
+                 0 < (newY + v.0) && (newY + v.1) < 9) &&
+                (0 < (newX + v.0*2) && (newX + v.1*2) < 9 &&
+                 0 < (newY + v.0*2) && (newY + v.1*2) < 9))
+            {
+                if(!isFriend(me, x: newX + v.0, y: newY + v.1) && isFriend(me, x: newX + v.0*2, y: newY + v.1*2))
+                {
+                    died.append( hasKoma(newX+v.0, y: newY+v.1) )
+                    board[(newX+v.0) + (newY+v.1)*9] = -1
+                }
+            }
+        }
+        return died
     }
     
     func hasKoma(x:Int, y:Int) -> Int
@@ -111,6 +137,21 @@ class HasamiShogi {
         
         
         return pos_ary
+    }
+    
+    func isFriend(me:Int, x:Int, y:Int) -> Bool
+    {
+        let koma = hasKoma(x, y: y)
+        if (me >= 0 && me < 9 && koma >= 0 && koma < 9)
+        {
+            return true
+        }
+        else if (me >= 9 && me < 18 && koma >= 9 && koma < 18)
+        {
+            return true
+        }else{
+            return false
+        }
     }
     
 }
