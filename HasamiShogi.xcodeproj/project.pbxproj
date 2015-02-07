@@ -15,6 +15,8 @@
 		841CEEFB1A85A73400DAE656 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 841CEEFA1A85A73400DAE656 /* Images.xcassets */; };
 		841CEEFE1A85A73400DAE656 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 841CEEFC1A85A73400DAE656 /* LaunchScreen.xib */; };
 		841CEF0A1A85A73400DAE656 /* HasamiShogiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841CEF091A85A73400DAE656 /* HasamiShogiTests.swift */; };
+		841CEF151A85A92000DAE656 /* img in Resources */ = {isa = PBXBuildFile; fileRef = 841CEF141A85A92000DAE656 /* img */; };
+		841CEF171A85A92800DAE656 /* wav in Resources */ = {isa = PBXBuildFile; fileRef = 841CEF161A85A92800DAE656 /* wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,8 @@
 		841CEF031A85A73400DAE656 /* HasamiShogiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HasamiShogiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		841CEF081A85A73400DAE656 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		841CEF091A85A73400DAE656 /* HasamiShogiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HasamiShogiTests.swift; sourceTree = "<group>"; };
+		841CEF141A85A92000DAE656 /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; name = img; path = HasamiShogi/img; sourceTree = "<group>"; };
+		841CEF161A85A92800DAE656 /* wav */ = {isa = PBXFileReference; lastKnownFileType = folder; name = wav; path = HasamiShogi/wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,7 @@
 		841CEEE11A85A73300DAE656 = {
 			isa = PBXGroup;
 			children = (
+				841CEF131A85A91100DAE656 /* Resource */,
 				841CEEEC1A85A73400DAE656 /* HasamiShogi */,
 				841CEF061A85A73400DAE656 /* HasamiShogiTests */,
 				841CEEEB1A85A73400DAE656 /* Products */,
@@ -116,6 +121,15 @@
 				841CEF081A85A73400DAE656 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		841CEF131A85A91100DAE656 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				841CEF161A85A92800DAE656 /* wav */,
+				841CEF141A85A92000DAE656 /* img */,
+			);
+			name = Resource;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,8 +212,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				841CEF151A85A92000DAE656 /* img in Resources */,
 				841CEEFE1A85A73400DAE656 /* LaunchScreen.xib in Resources */,
 				841CEEFB1A85A73400DAE656 /* Images.xcassets in Resources */,
+				841CEF171A85A92800DAE656 /* wav in Resources */,
 				841CEEF21A85A73400DAE656 /* GameScene.sks in Resources */,
 				841CEEF91A85A73400DAE656 /* Main.storyboard in Resources */,
 			);
