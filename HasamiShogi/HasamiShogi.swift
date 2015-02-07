@@ -13,13 +13,13 @@ class HasamiShogi {
     
     enum Judge{
         case Playing
-        case Win
-        case Lose
+        case P1Win
+        case P2Win
     }
     
     enum Turn{
-        case Friend
-        case Enemy
+        case P1
+        case P2
     }
     
     var winFlag:Bool = false
@@ -28,7 +28,7 @@ class HasamiShogi {
     var board:[Int] = [Int](count: 81, repeatedValue: -1)
     var friend:Int = 0
     var enemy:Int = 0
-    var turn:Turn = Turn.Friend
+    var turn:Turn = Turn.P2
     
     init ()
     {
@@ -55,22 +55,13 @@ class HasamiShogi {
         winOrLose = Judge.Playing
         tmpWinOrLose = Judge.Playing
         winFlag = false
-        turn = Turn.Friend
+        turn = Turn.P2
         
         return
     }
     
     func moveTo(x:Int, y:Int, newX:Int, newY:Int) -> Bool
     {
-        //移動判定は前でやってるのでここでやらない
-//        if exist(x, y: y) == -1
-//        {
-//            return false
-//        }
-//        if exist(newX, y: newY) != -1
-//        {
-//            return false
-//        }
         board[newX + newY * 9] = board[x + y * 9]
         board[x + y * 9] = -1
         return true
@@ -100,12 +91,12 @@ class HasamiShogi {
                 }
             }
         }
-        if(turn == Turn.Friend){
+        if(turn == Turn.P2){
             friend += died.count
             turn = Turn.Enemy
         }else{
             enemy += died.count
-            turn = Turn.Friend
+            turn = Turn.P2
         }
         return died
     }
@@ -126,8 +117,8 @@ class HasamiShogi {
     {
         if friend >= 5
         {
-            winOrLose = Judge.Win
-            return Judge.Win
+            winOrLose = Judge.P1Win
+            return Judge.P1Win
         }
         if enemy >= 5
         {
@@ -143,14 +134,14 @@ class HasamiShogi {
             {
                 
                 winFlag = true
-                tmpWinOrLose = friend > enemy ? Judge.Win : Judge.Lose
+                tmpWinOrLose = friend > enemy ? Judge.P1Win : Judge.Lose
             }
             return Judge.Playing
         }else{
             let score_d = abs(friend - enemy)
             if score_d >= 3
             {
-                let newWinOrLose = friend > enemy ? Judge.Win : Judge.Lose
+                let newWinOrLose = friend > enemy ? Judge.P1Win : Judge.Lose
                 if newWinOrLose == tmpWinOrLose
                 {
                     winOrLose = tmpWinOrLose
@@ -165,7 +156,7 @@ class HasamiShogi {
     
     func canPlay(komaIndex:Int) -> Bool
     {
-        if (turn == Turn.Friend && komaIndex >= 0 && komaIndex < 9)
+        if (turn == Turn.P2 && komaIndex >= 0 && komaIndex < 9)
         {
             return true
         }

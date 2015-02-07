@@ -146,7 +146,7 @@ class GameScene: SKScene {
     {
         friendLabel.text = "先手: " + String(hShogi.friend)
         enemyLabel.text = "後手: " + String(hShogi.enemy)
-        turnLabel.text = hShogi.turn == HasamiShogi.Turn.Friend ? "あなた" : "相手"
+        turnLabel.text = hShogi.turn == HasamiShogi.Turn.P1 ? "あなた" : "相手"
         return
     }
     
@@ -232,7 +232,7 @@ class GameScene: SKScene {
                 
                 let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].0 , y: candidate_pos[0].1, newX: p.0, newY: p.1)
                 // sound
-                let soundFileName = hShogi.turn != HasamiShogi.Turn.Friend ? "senteaction.wav" : "goteaction.wav"
+                let soundFileName = hShogi.turn != HasamiShogi.Turn.P1 ? "senteaction.wav" : "goteaction.wav"
                 let soundAct = SKAction.playSoundFileNamed(soundFileName, waitForCompletion: false)
                 runAction(soundAct)
                 if died.count > 0
@@ -273,7 +273,7 @@ class GameScene: SKScene {
         let flag:HasamiShogi.Judge = hShogi.judge()
         if flag != HasamiShogi.Judge.Playing
         {
-            let txt:String = (flag == HasamiShogi.Judge.Win) ? "勝ち！" : "負け..."
+            let txt:String = (flag == HasamiShogi.Judge.P1Win) ? "勝ち！" : "負け..."
             resultLabel.text = "あなたの" + txt
             resultLabel.hidden = false
             let soundFileName = "gamefinish.wav"
