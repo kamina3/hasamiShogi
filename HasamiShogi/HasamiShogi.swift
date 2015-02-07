@@ -98,9 +98,7 @@ class HasamiShogi {
         
         for v:(Int, Int) in vec
         {
-            // 境界チェック
             died += getDiedIndex((newX, newY), vec:v)
-            
         }
         if(turn == Turn.P1){
             friend += died.count
@@ -115,7 +113,8 @@ class HasamiShogi {
     func getDiedIndex(orgPoint:(Int, Int), vec:(Int, Int)) -> [Int]
     {
         var died:[Int] = [Int]()
-        var curPoint = orgPoint
+        var diedPos:[(Int, Int)] = [(Int, Int)]()
+        var curPoint:(Int, Int) = orgPoint
         var orgIdx = self[orgPoint.0, orgPoint.1]
         while !isOutOfRange(curPoint)
         {
@@ -123,12 +122,19 @@ class HasamiShogi {
             if !isFriend(orgIdx, x: curPoint.0, y: curPoint.1) && self[curPoint.0, curPoint.1] != -1
             {
                 died.append(self[curPoint.0, curPoint.1])
+                diedPos.append( curPoint as (Int, Int))
             }else if isFriend(orgIdx, x: curPoint.0, y: curPoint.1){
                 break
             }else{
                 died = [Int]()
+                diedPos = [(Int, Int)]()
                 break
             }
+        }
+        //走査してから削除処理
+        for p in diedPos
+        {
+            self[p.0, p.1] = -1
         }
         return died
     }
@@ -148,8 +154,6 @@ class HasamiShogi {
         }
         return true
     }
-    
-
     
     //勝敗判定
     func judge() -> Judge
