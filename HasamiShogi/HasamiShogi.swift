@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class HasamiShogi {
     
@@ -28,11 +29,11 @@ class HasamiShogi {
     
     func moveTo(x:Int, y:Int, newX:Int, newY:Int) -> Bool
     {
-        if !hasKoma(x, y: y)
+        if hasKoma(x, y: y) == -1
         {
             return false
         }
-        if hasKoma(newX, y: newY)
+        if hasKoma(newX, y: newY) != -1
         {
             return false
         }
@@ -41,9 +42,10 @@ class HasamiShogi {
         return true
     }
     
-    func hasKoma(x:Int, y:Int) -> Bool
+    func hasKoma(x:Int, y:Int) -> Int
     {
-        return board[x + y*9] != -1
+        NSLog("x:%d y:%d ->%d", x, y, board[x + y*9])
+        return board[x + y*9]
     }
     
     //勝敗判定
@@ -52,4 +54,63 @@ class HasamiShogi {
      
         return HasamiShogi.Judge.Playing
     }
+    
+    func getCandidatePositions(x :Int, y: Int) -> [(Int, Int)]
+    {
+        if hasKoma(x, y: y) == -1
+        {
+            return []
+        }
+        var pos_ary:[(Int, Int)] = [(Int, Int)]()
+        pos_ary.append((x, y))
+        
+        var i = 1
+        while x+i < 9
+        {
+            if hasKoma(x+i, y: y) == -1
+            {
+                pos_ary.append (x+i, y)
+            }else{
+                break
+            }
+            i++
+        }
+        i = 1
+        while x-i >= 0
+        {
+            if hasKoma(x-i, y: y) == -1
+            {
+                pos_ary.append (x-i, y)
+            }else{
+                break
+            }
+            i++
+        }
+        i = 1
+        while y+i < 9
+        {
+            if hasKoma(x, y: y+i) == -1
+            {
+                pos_ary.append (x, y+i)
+            }else{
+                break
+            }
+            i++
+        }
+        i = 1
+        while y-i >= 0
+        {
+            if hasKoma(x, y: y-i) == -1
+            {
+                pos_ary.append (x, y-i)
+            }else{
+                break
+            }
+            i++
+        }
+        
+        
+        return pos_ary
+    }
+    
 }
