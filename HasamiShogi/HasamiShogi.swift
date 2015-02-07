@@ -91,9 +91,9 @@ class HasamiShogi {
                 }
             }
         }
-        if(turn == Turn.P2){
+        if(turn == Turn.P1){
             friend += died.count
-            turn = Turn.Enemy
+            turn = Turn.P1
         }else{
             enemy += died.count
             turn = Turn.P2
@@ -122,8 +122,8 @@ class HasamiShogi {
         }
         if enemy >= 5
         {
-            winOrLose = Judge.Lose
-            return Judge.Lose
+            winOrLose = Judge.P2Win
+            return Judge.P2Win
         }
         
         // 3枚差分判定
@@ -134,14 +134,14 @@ class HasamiShogi {
             {
                 
                 winFlag = true
-                tmpWinOrLose = friend > enemy ? Judge.P1Win : Judge.Lose
+                tmpWinOrLose = friend > enemy ? Judge.P1Win : Judge.P2Win
             }
             return Judge.Playing
         }else{
             let score_d = abs(friend - enemy)
             if score_d >= 3
             {
-                let newWinOrLose = friend > enemy ? Judge.P1Win : Judge.Lose
+                let newWinOrLose = friend > enemy ? Judge.P1Win : Judge.P2Win
                 if newWinOrLose == tmpWinOrLose
                 {
                     winOrLose = tmpWinOrLose
@@ -156,11 +156,11 @@ class HasamiShogi {
     
     func canPlay(komaIndex:Int) -> Bool
     {
-        if (turn == Turn.P2 && komaIndex >= 0 && komaIndex < 9)
+        if (turn == Turn.P1 && komaIndex >= 0 && komaIndex < 9)
         {
             return true
         }
-        if (turn == Turn.Enemy && komaIndex >= 9 && komaIndex < 18)
+        if (turn == Turn.P2 && komaIndex >= 9 && komaIndex < 18)
         {
             return true
         }
