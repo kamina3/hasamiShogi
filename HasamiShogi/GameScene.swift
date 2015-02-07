@@ -9,15 +9,22 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    // ui 定数
     var scale:CGFloat = 1.0
     let masu_w:CGFloat = 62.0
     let masu_huchi:CGFloat = 41.0
     let board_full_size:CGFloat = 640.0
-    var komas:[SKSpriteNode?] = [SKSpriteNode?](count: 18, repeatedValue: nil)
+    
+    // ゲームオブジェクト
     let hShogi:HasamiShogi = HasamiShogi()
     var selected_index:Int = -1
-    var candidate_panel:[SKSpriteNode] = [SKSpriteNode]()
     var candidate_pos:[(Int, Int)] = [(Int, Int)]()
+    
+    // UIオブジェクト
+    var komas:[SKSpriteNode?] = [SKSpriteNode?](count: 18, repeatedValue: nil)
+    var candidate_panel:[SKSpriteNode] = [SKSpriteNode]()
+    var myResLabel:SKLabelNode! = SKLabelNode(text: "先手: 0")
+    var enemyResLabel:SKLabelNode! = SKLabelNode(text: "後手: 0")
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -100,6 +107,11 @@ class GameScene: SKScene {
         sprite.position = getMasuPosition(x, y: y)
         sprite.zPosition = 3
         return sprite
+    }
+    
+    func updateBoardState() -> Void
+    {
+        
     }
     
     func clearBoardState() -> Void
