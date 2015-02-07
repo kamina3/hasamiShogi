@@ -24,9 +24,9 @@ class GameScene: SKScene {
     // UIオブジェクト
     var komas:[SKSpriteNode?] = [SKSpriteNode?](count: 18, repeatedValue: nil)
     var candidate_panel:[SKSpriteNode] = [SKSpriteNode]()
-    var friendLabel:SKLabelNode! = SKLabelNode(text: "先手: 0")
-    var enemyLabel:SKLabelNode! = SKLabelNode(text: "後手: 0")
-    var turnLabel:SKLabelNode = SKLabelNode(text: "自分")
+    var friendLabel:SKLabelNode = SKLabelNode(text: "")
+    var enemyLabel:SKLabelNode = SKLabelNode(text: "")
+    var turnLabel:SKLabelNode = SKLabelNode(text: "")
     var resultLabel:SKLabelNode = SKLabelNode(text: "")
     
     // サウンドオブジェクト
