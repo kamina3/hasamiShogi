@@ -22,7 +22,7 @@ class GameScene: SKScene {
     var initFlag:Bool = false
     
     // UIオブジェクト
-    var komas:[SKSpriteNode?] = [SKSpriteNode?](count: 18, repeatedValue: nil)
+    var komas:[SKSpriteNode] = []
     var candidate_panel:[SKSpriteNode] = [SKSpriteNode]()
     var friendLabel:SKLabelNode = SKLabelNode(text: "")
     var enemyLabel:SKLabelNode = SKLabelNode(text: "")
@@ -50,8 +50,6 @@ class GameScene: SKScene {
         bg.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
         addChild(bg);
         
-        initializeData()
-        
         friendLabel.position = CGPointMake(self.frame.size.width / 3.0, 10*scale)
         friendLabel.fontColor = SKColor.blackColor()
         friendLabel.fontSize = 48
@@ -72,33 +70,61 @@ class GameScene: SKScene {
         resultLabel.zPosition = 5
         addChild(resultLabel)
         
-        updateStatus()
-        
-    }
-    
-    func initializeData() -> Void
-    {
-        for spr in komas
-        {
-            spr?.removeFromParent()
-        }
-        
         for i in 0...8
         {
             let koma = createKomaSprite("koma_ho.png", x: i, y: 0)
             addChild(koma)
-            komas[i] = koma
+            komas.append(koma)
         }
         for i in 0...8
         {
             let koma_r = createKomaSprite("koma_to_r.png", x: i, y: 8)
             addChild(koma_r)
-            komas[i+9] = koma_r
+            komas.append(koma_r)
         }
+        
+        initializeData()
+        
+    }
+    
+    func initializeData() -> Void
+    {
         hShogi.initializeData()
         resultLabel.hidden = true
         initFlag = false
         updateStatus()
+        refreshPosition()
+    }
+    
+    // ラベル の張替え、位置の再設定
+    func updateStatus() -> Void
+    {
+        friendLabel.text = "先手: " + String(hShogi.friend)
+        enemyLabel.text = "後手: " + String(hShogi.enemy)
+        turnLabel.text = hShogi.turn == HasamiShogi.Turn.P1 ? "あなた" : "相手"
+        return
+    }
+    
+    func refreshPosition() -> Void
+    {
+        // HasamiShogiクラスのデータにもとづいて再配置
+        for i in 0...17
+        {
+            komas[i].hidden = true
+        }
+        for i in 0...8
+        {
+            for j in 0...8
+            {
+                let index = hShogi.getIndexAtXY(i, y: j)
+                if index != -1
+                {
+                    komas[index].hidden = false
+                    komas[index].position = getMasuPosition(i, y: j)
+                }
+                NSLog("(%d, %d) = %d", i, j, index)
+            }
+        }
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
@@ -134,9 +160,8 @@ class GameScene: SKScene {
                     
                 }else{
                     //タップした場所にコマがあれば選択状態に変化
-                        NSLog("%d, %d", pos_on_board.0, pos_on_board.1)
-                        setCandidateTile(pos_on_board.0, y: pos_on_board.1)
-                    
+                    NSLog("%d, %d", pos_on_board.0, pos_on_board.1)
+                    setCandidateTile(pos_on_board.0, y: pos_on_board.1)
                 }
             }
             
@@ -149,13 +174,7 @@ class GameScene: SKScene {
         /* Called before each frame is rendered */
     }
     
-    func updateStatus() -> Void
-    {
-        friendLabel.text = "先手: " + String(hShogi.friend)
-        enemyLabel.text = "後手: " + String(hShogi.enemy)
-        turnLabel.text = hShogi.turn == HasamiShogi.Turn.P1 ? "あなた" : "相手"
-        return
-    }
+
     
     func createKomaSprite(spriteName: String, x: Int, y: Int) -> SKSpriteNode
     {
@@ -181,7 +200,7 @@ class GameScene: SKScene {
         }else{
             textureName = "koma_to_r.png"
         }
-        k?.texture = SKTexture(imageNamed: textureName)
+        k.texture = SKTexture(imageNamed: textureName)
         selected_index = -1
         var canSpr:SKSpriteNode? = nil
         while true {
@@ -197,7 +216,7 @@ class GameScene: SKScene {
     
     func setCandidateTile(x :Int, y :Int) -> Void
     {
-        let spriteIndex = hShogi.exist(x, y: y)
+        let spriteIndex = hShogi.getIndexAtXY(x, y: y)
         if spriteIndex != -1 && hShogi.canPlay(spriteIndex)
         {
             
@@ -207,7 +226,7 @@ class GameScene: SKScene {
             }else{
                 textureName = "koma_to_hover_r.png"
             }
-            komas[spriteIndex]?.texture = SKTexture(imageNamed: textureName)
+            komas[spriteIndex].texture = SKTexture(imageNamed: textureName)
             self.selected_index = spriteIndex
             candidate_pos = hShogi.getCandidatePositions(x, y: y)
             for p:(Int, Int) in candidate_pos
@@ -232,24 +251,25 @@ class GameScene: SKScene {
             {
 //                komas[selected_index]?.position = getMasuPosition(p.0, y: p.1)
                 let moveP =  getMasuPosition(p.0, y: p.1)
-                let orgP = komas[selected_index]!.position
+                let orgP = komas[selected_index].position
                 let moveVec = CGVectorMake(moveP.x - orgP.x, moveP.y - orgP.y)
                 let moveAct = SKAction.moveBy(moveVec, duration: 0.5)
-                komas[selected_index]?.runAction(moveAct)
+                komas[selected_index].runAction(moveAct)
                 
                 let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].0 , y: candidate_pos[0].1, newX: p.0, newY: p.1)
                 // sound
                 let soundAct = hShogi.turn != HasamiShogi.Turn.P1 ? p1SoundAct : p2SoundAct
                 runAction(soundAct)
+                
                 if died.count > 0
                 {
                     runAction(getSAct)
                 }
+                
                 for dIndex in died
                 {
-//                    if dIndex == -1 {continue} //どっか処理甘い　-1が飛んでくる
-                    komas[dIndex]?.removeFromParent()
-                    komas[dIndex] = nil
+                    komas[dIndex].hidden = true
+
                 }
                 checkFinishGame()
                 clearBoardState()
@@ -261,22 +281,13 @@ class GameScene: SKScene {
         return;
     }
     
-    func getMasuPosition(x: Int, y: Int) -> CGPoint
-    {
-        let _x:CGFloat = CGFloat(x)
-        let _y:CGFloat = CGFloat(y)
-        let xpos:CGFloat = ((_x * masu_w) + masu_huchi + masu_w / 2.0) * scale
-        let ypos:CGFloat = ((_y * masu_w) + masu_huchi + masu_w / 2.0) * scale
-        return CGPointMake(xpos, ypos)
-    }
-    
     func checkFinishGame() -> Void
     {
         let flag:HasamiShogi.Judge = hShogi.judge()
         if flag != HasamiShogi.Judge.Playing
         {
-            let txt:String = (flag == HasamiShogi.Judge.P1Win) ? "勝ち！" : "負け..."
-            resultLabel.text = "あなたの" + txt
+            let txt:String = (flag == HasamiShogi.Judge.P1Win) ? "1P" : "2p"
+            resultLabel.text = txt + "の勝ち！"
             resultLabel.hidden = false
             playSound(finishSAct)
         }
@@ -285,6 +296,17 @@ class GameScene: SKScene {
     func playSound(soundAct:SKAction) -> Void
     {
         runAction(soundAct)
+    }
+    
+// position <-> (x, y) on board
+    
+    func getMasuPosition(x: Int, y: Int) -> CGPoint
+    {
+        let _x:CGFloat = CGFloat(x)
+        let _y:CGFloat = CGFloat(y)
+        let xpos:CGFloat = ((_x * masu_w) + masu_huchi + masu_w / 2.0) * scale
+        let ypos:CGFloat = ((_y * masu_w) + masu_huchi + masu_w / 2.0) * scale
+        return CGPointMake(xpos, ypos)
     }
     
     func getPositionOnBorad(pos:CGPoint) -> (Int, Int)? {

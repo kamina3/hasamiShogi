@@ -28,7 +28,7 @@ class HasamiShogi {
     var board:[Int] = [Int](count: 81, repeatedValue: -1)
     var friend:Int = 0
     var enemy:Int = 0
-    var turn:Turn = Turn.P2
+    var turn:Turn = Turn.P1
     
     init ()
     {
@@ -39,38 +39,40 @@ class HasamiShogi {
     {
         for i in 0...8
         {
-            board[i] = i
-            board[72+i] = i+9
+            setIndexAtXY(i, x: i, y:0)
+            setIndexAtXY(i + 9, x: i, y: 8)
         }
         
         for i in 1...7
         {
             for j in 0...8
             {
-                board[i * 9 + j] = -1
+                setIndexAtXY(-1, x:j, y: i)
             }
         }
+        
         friend = 0
         enemy = 0
         winOrLose = Judge.Playing
         tmpWinOrLose = Judge.Playing
         winFlag = false
-        turn = Turn.P2
+        turn = Turn.P1
         
         return
     }
     
     func moveTo(x:Int, y:Int, newX:Int, newY:Int) -> Bool
     {
-        board[newX + newY * 9] = board[x + y * 9]
-        board[x + y * 9] = -1
+        let idx = getIndexAtXY(x, y: y)
+        setIndexAtXY(idx, x: newX, y: newY)
+        setIndexAtXY(-1, x: x, y: y)
         return true
     }
     
     func moveAndGetDiedIndexes(x:Int, y:Int, newX:Int, newY:Int) -> [Int]
     {
         moveTo(x, y: y, newX: newX, newY: newY)
-        var me = exist(newX, y: newY)
+        var me = getIndexAtXY(newX, y: newY)
         var died:[Int] = [Int]()
         let vec = [(1, 0), (-1, 0), (0, 1), (0, -1)]
         
@@ -84,32 +86,39 @@ class HasamiShogi {
             {
                 if(!isFriend(me, x: newX + v.0, y: newY + v.1)
                     && isFriend(me, x: newX + v.0*2, y: newY + v.1*2)
-                    && exist(newX + v.0, y:newY + v.1) != -1)  // となりにコマが存在する
+                    && getIndexAtXY(newX + v.0, y:newY + v.1) != -1)  // となりにコマが存在する
                 {
-                    died.append( exist(newX+v.0, y: newY+v.1) )
-                    board[(newX+v.0) + (newY+v.1)*9] = -1
+                    died.append( getIndexAtXY(newX+v.0, y: newY+v.1) )
+                    setIndexAtXY(-1, x: newX+v.0, y: newY+v.1)
                 }
             }
         }
         if(turn == Turn.P1){
             friend += died.count
-            turn = Turn.P1
+            turn = Turn.P2
         }else{
             enemy += died.count
-            turn = Turn.P2
+            turn = Turn.P1
         }
         return died
     }
     
-    func exist(x:Int, y:Int) -> Int
+    //多分ここswiftyな書き方あるはず...
+    //indexは駒のid
+    func getIndexAtXY(x:Int, y:Int) -> Int
     {
-        let index = x + y*9
-        if index > 0 && index <= 81
+        let idx = x + y*9
+        if idx >= 0 && idx < 81
         {
-            NSLog("x:%d y:%d ->%d", x, y, board[x + y*9])
-            return board[x + y*9]
+            NSLog("x:%d y:%d ->%d", x, y, board[idx])
+            return board[idx]
         }
         return -1
+    }
+    
+    func setIndexAtXY(index:Int, x:Int, y:Int) -> Void
+    {
+        board[x + y * 9] = index
     }
     
     //勝敗判定
@@ -169,7 +178,7 @@ class HasamiShogi {
     
     func getCandidatePositions(x :Int, y: Int) -> [(Int, Int)]
     {
-        if exist(x, y: y) == -1
+        if getIndexAtXY(x, y: y) == -1
         {
             return []
         }
@@ -179,7 +188,7 @@ class HasamiShogi {
         var i = 1
         while x+i < 9
         {
-            if exist(x+i, y: y) == -1
+            if getIndexAtXY(x+i, y: y) == -1
             {
                 pos_ary.append (x+i, y)
             }else{
@@ -190,7 +199,7 @@ class HasamiShogi {
         i = 1
         while x-i >= 0
         {
-            if exist(x-i, y: y) == -1
+            if getIndexAtXY(x-i, y: y) == -1
             {
                 pos_ary.append (x-i, y)
             }else{
@@ -201,7 +210,7 @@ class HasamiShogi {
         i = 1
         while y+i < 9
         {
-            if exist(x, y: y+i) == -1
+            if getIndexAtXY(x, y: y+i) == -1
             {
                 pos_ary.append (x, y+i)
             }else{
@@ -212,7 +221,7 @@ class HasamiShogi {
         i = 1
         while y-i >= 0
         {
-            if exist(x, y: y-i) == -1
+            if getIndexAtXY(x, y: y-i) == -1
             {
                 pos_ary.append (x, y-i)
             }else{
@@ -227,7 +236,7 @@ class HasamiShogi {
     
     func isFriend(me:Int, x:Int, y:Int) -> Bool
     {
-        let koma = exist(x, y: y)
+        let koma = getIndexAtXY(x, y: y)
         if (me >= 0 && me < 9 && koma >= 0 && koma < 9)
         {
             return true
