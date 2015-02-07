@@ -112,6 +112,7 @@ class HasamiShogi {
     
     func getDiedIndex(orgPoint:(Int, Int), vec:(Int, Int)) -> [Int]
     {
+        // 1ライン上調査
         var died:[Int] = [Int]()
         var diedPos:[(Int, Int)] = [(Int, Int)]()
         var curPoint:(Int, Int) = orgPoint
@@ -136,13 +137,43 @@ class HasamiShogi {
         {
             self[p.0, p.1] = -1
         }
-        return died
-    }
-    
-    func getDiedIndex2() -> [Int]
-    {
-        //ライン上じゃない場合の判定...
-        return [Int]()
+        
+        // 囲まれた状態になってるか調査
+        var tmpPos = [(Int, Int)]()
+        var tmpBoard = [Bool](count: 81, repeatedValue: false)
+        let vecs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        var died2 = [Int]()
+        tmpPos.append((orgPoint.0 + vec.0, orgPoint.1 + vec.1) as (Int, Int))
+        while tmpPos.count > 0
+        {
+            curPoint = tmpPos.removeLast()
+            if !isOutOfRange(curPoint)
+            {
+                if self[curPoint.0, curPoint.1] == -1
+                {
+                    diedPos = [(Int, Int)]()
+                    died2 = [Int]()
+                    break
+                } else if !isFriend(orgIdx, x: curPoint.0, y: curPoint.1) {
+                    died2.append(self[curPoint.0, curPoint.1])
+                    for v in vecs
+                    {
+                        if !isOutOfRange((curPoint.0 + v.0, curPoint.1 + v.1)) &&
+                            !tmpBoard[curPoint.0 + v.0 + (curPoint.1 + v.1) * 9]
+                        {
+                            tmpPos.append((curPoint.0 + v.0, curPoint.1 + v.1))
+                        }
+                    }
+                }
+                tmpBoard[curPoint.0 + curPoint.1 * 9] = true
+            }
+        }
+        //同様に走査してから削除処理
+        for p in diedPos
+        {
+            self[p.0, p.1] = -1
+        }
+        return died + died2
     }
     
     func isOutOfRange(pos:(Int, Int)) -> Bool
