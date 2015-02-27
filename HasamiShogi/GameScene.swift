@@ -10,7 +10,7 @@ import SpriteKit
 
 class GameScene: SKScene {
     // ui 定数
-    var scale:CGFloat = 1.0
+    var _scale:CGFloat = 1.0
     let masu_w:CGFloat = 62.0
     let masu_huchi:CGFloat = 41.0
     let board_full_size:CGFloat = 640.0
@@ -43,29 +43,29 @@ class GameScene: SKScene {
         self.backgroundColor = SKColor.whiteColor()
         
         let bg = SKSpriteNode(imageNamed: "ban.png")
-        scale = self.frame.size.width / bg.size.width
-        bg.setScale(scale)
-        NSLog("scale %@", scale);
+        _scale = self.frame.size.width / bg.size.width
+        bg.setScale(_scale)
+        NSLog("scale %@", _scale);
         bg.anchorPoint = CGPointMake(0.5, 0.5);
         bg.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
         addChild(bg);
         
-        friendLabel.position = CGPointMake(self.frame.size.width / 3.0, 10*scale)
+        friendLabel.position = CGPointMake(self.frame.size.width / 3.0, 10 * _scale)
         friendLabel.fontColor = SKColor.blackColor()
         friendLabel.fontSize = 48
         addChild(friendLabel)
-        enemyLabel.position = CGPointMake(self.frame.size.width * 2.0 / 3.0, 10*scale)
+        enemyLabel.position = CGPointMake(self.frame.size.width * 2.0 / 3.0, 10 * _scale)
         enemyLabel.fontColor = SKColor.blackColor()
         enemyLabel.fontSize = 48
         addChild(enemyLabel)
         
-        turnLabel.position = CGPointMake(self.frame.size.width / 2.0, 10*scale)
+        turnLabel.position = CGPointMake(self.frame.size.width / 2.0, 10 * _scale)
         turnLabel.fontColor = SKColor.blackColor()
         turnLabel.fontSize = 52
         addChild(turnLabel)
         
         resultLabel.fontColor = SKColor.blackColor()
-        resultLabel.fontSize = 64 * scale
+        resultLabel.fontSize = 64 * _scale
         resultLabel.position = CGPointMake(self.frame.width/2, self.frame.height/2)
         resultLabel.zPosition = 5
         addChild(resultLabel)
@@ -127,7 +127,9 @@ class GameScene: SKScene {
         }
     }
     
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+//    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) -> Void {
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+
         /* Called when a touch begins */
         if initFlag
         {
@@ -180,7 +182,7 @@ class GameScene: SKScene {
     {
         let sprite = SKSpriteNode(imageNamed: spriteName)
         sprite.anchorPoint = CGPointMake(0.5, 0.5)
-        sprite.setScale(scale)
+        sprite.setScale(_scale)
         sprite.position = getMasuPosition(x, y: y)
         sprite.zPosition = 3
         return sprite
@@ -235,7 +237,7 @@ class GameScene: SKScene {
                 canSpr.anchorPoint = CGPointMake(0.5, 0.5)
                 canSpr.position = getMasuPosition(p.x, y: p.y)
                 canSpr.zPosition = 2
-                canSpr.setScale(scale)
+                canSpr.setScale(_scale)
                 addChild(canSpr)
                 candidate_panel.append(canSpr)
                 
@@ -304,16 +306,16 @@ class GameScene: SKScene {
     {
         let _x:CGFloat = CGFloat(x)
         let _y:CGFloat = CGFloat(y)
-        let xpos:CGFloat = ((_x * masu_w) + masu_huchi + masu_w / 2.0) * scale
-        let ypos:CGFloat = ((_y * masu_w) + masu_huchi + masu_w / 2.0) * scale
+        let xpos:CGFloat = ((_x * masu_w) + masu_huchi + masu_w / 2.0) * _scale
+        let ypos:CGFloat = ((_y * masu_w) + masu_huchi + masu_w / 2.0) * _scale
         return CGPointMake(xpos, ypos)
     }
     
     func getPositionOnBorad(pos:CGPoint) -> XY? {
-        if pos.x < masu_huchi*scale || pos.x > (board_full_size - masu_huchi)*scale{
+        if pos.x < masu_huchi * _scale || pos.x > (board_full_size - masu_huchi) * _scale{
             return nil
         }
-        if pos.y < masu_huchi*scale || pos.y > (board_full_size - masu_huchi)*scale{
+        if pos.y < masu_huchi * _scale || pos.y > (board_full_size - masu_huchi) * _scale{
             return nil
         }
         var x:Int = 0
@@ -321,7 +323,7 @@ class GameScene: SKScene {
         for i in 0...8
         {
             let _i:CGFloat = CGFloat(i)
-            var _ipos:CGFloat = ((_i * masu_w) + masu_huchi) * scale
+            var _ipos:CGFloat = ((_i * masu_w) + masu_huchi) * _scale
             if pos.x > _ipos
             {
                 x = i            }
