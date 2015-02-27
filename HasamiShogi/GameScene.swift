@@ -18,7 +18,7 @@ class GameScene: SKScene {
     // ゲームオブジェクト
     let hShogi:HasamiShogi = HasamiShogi()
     var selected_index:Int = -1
-    var candidate_pos:[(Int, Int)] = [(Int, Int)]()
+    var candidate_pos:[XY] = [XY]()
     var initFlag:Bool = false
     
     // UIオブジェクト
@@ -147,9 +147,9 @@ class GameScene: SKScene {
             if let pos_on_board = getPositionOnBorad(loc){
                 if selected_index != -1
                 {
-                    NSLog("%d, %d", pos_on_board.0, pos_on_board.1)
+                    NSLog("%d, %d", pos_on_board.x, pos_on_board.y)
                     // 選択状態で同じものタップすると状態クリア
-                    if (candidate_pos[0].0 == pos_on_board.0 && candidate_pos[0].1 == pos_on_board.1)
+                    if (candidate_pos[0].x == pos_on_board.x && candidate_pos[0].x == pos_on_board.y)
                     {
                         clearBoardState()
                         return
@@ -160,8 +160,8 @@ class GameScene: SKScene {
                     
                 }else{
                     //タップした場所にコマがあれば選択状態に変化
-                    NSLog("%d, %d", pos_on_board.0, pos_on_board.1)
-                    setCandidateTile(pos_on_board.0, y: pos_on_board.1)
+                    NSLog("%d, %d", pos_on_board.x, pos_on_board.y)
+                    setCandidateTile(pos_on_board.x, y: pos_on_board.y)
                 }
             }
             
@@ -229,11 +229,11 @@ class GameScene: SKScene {
             komas[spriteIndex].texture = SKTexture(imageNamed: textureName)
             self.selected_index = spriteIndex
             candidate_pos = hShogi.getCandidatePositions(x, y: y)
-            for p:(Int, Int) in candidate_pos
+            for p:XY in candidate_pos
             {
                 let canSpr = SKSpriteNode(imageNamed: "masu_hover.png")
                 canSpr.anchorPoint = CGPointMake(0.5, 0.5)
-                canSpr.position = getMasuPosition(p.0, y: p.1)
+                canSpr.position = getMasuPosition(p.x, y: p.y)
                 canSpr.zPosition = 2
                 canSpr.setScale(scale)
                 addChild(canSpr)
@@ -243,20 +243,20 @@ class GameScene: SKScene {
         }
     }
     
-    func moveKoma(pos_on_board: (Int, Int)) -> Void
+    func moveKoma(pos_on_board: XY) -> Void
     {
         for p in candidate_pos
         {
-            if p.0 == pos_on_board.0 && p.1 == pos_on_board.1
+            if p.x == pos_on_board.x && p.y == pos_on_board.y
             {
 //                komas[selected_index]?.position = getMasuPosition(p.0, y: p.1)
-                let moveP =  getMasuPosition(p.0, y: p.1)
+                let moveP =  getMasuPosition(p.x, y: p.y)
                 let orgP = komas[selected_index].position
                 let moveVec = CGVectorMake(moveP.x - orgP.x, moveP.y - orgP.y)
                 let moveAct = SKAction.moveBy(moveVec, duration: 0.5)
                 komas[selected_index].runAction(moveAct)
                 
-                let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].0 , y: candidate_pos[0].1, newX: p.0, newY: p.1)
+                let died:[Int] = hShogi.moveAndGetDiedIndexes(candidate_pos[0].x , y: candidate_pos[0].y, newX: p.x, newY: p.y)
                 // sound
                 let soundAct = hShogi.turn != HasamiShogi.Turn.P1 ? p1SoundAct : p2SoundAct
                 runAction(soundAct)
@@ -309,7 +309,7 @@ class GameScene: SKScene {
         return CGPointMake(xpos, ypos)
     }
     
-    func getPositionOnBorad(pos:CGPoint) -> (Int, Int)? {
+    func getPositionOnBorad(pos:CGPoint) -> XY? {
         if pos.x < masu_huchi*scale || pos.x > (board_full_size - masu_huchi)*scale{
             return nil
         }

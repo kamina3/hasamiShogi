@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+typealias XY = (x:Int, y:Int)
+
 class HasamiShogi {
     
     enum Judge{
@@ -96,7 +98,7 @@ class HasamiShogi {
         var died:[Int] = [Int]()
         let vec = [(1, 0), (-1, 0), (0, 1), (0, -1)]
         
-        for v:(Int, Int) in vec
+        for v:XY in vec
         {
             died += getDiedIndex((newX, newY), vec:v)
         }
@@ -110,75 +112,75 @@ class HasamiShogi {
         return died
     }
     
-    func getDiedIndex(orgPoint:(Int, Int), vec:(Int, Int)) -> [Int]
+    func getDiedIndex(orgPoint:XY, vec:XY) -> [Int]
     {
         // 1ライン上調査
         var died:[Int] = [Int]()
-        var diedPos:[(Int, Int)] = [(Int, Int)]()
-        var curPoint:(Int, Int) = orgPoint
-        var orgIdx = self[orgPoint.0, orgPoint.1]
+        var diedPos:[XY] = [XY]()
+        var curPoint:XY = orgPoint
+        var orgIdx = self[orgPoint.x, orgPoint.y]
         while !isOutOfRange(curPoint)
         {
-            curPoint = (curPoint.0 + vec.0, curPoint.1 + vec.1)
-            if !isFriend(orgIdx, x: curPoint.0, y: curPoint.1) && self[curPoint.0, curPoint.1] != -1
+            curPoint = (curPoint.x + vec.x, curPoint.y + vec.y)
+            if !isFriend(orgIdx, x: curPoint.x, y: curPoint.y) && self[curPoint.x, curPoint.y] != -1
             {
-                died.append(self[curPoint.0, curPoint.1])
-                diedPos.append( curPoint as (Int, Int))
-            }else if isFriend(orgIdx, x: curPoint.0, y: curPoint.1){
+                died.append(self[curPoint.x, curPoint.y])
+                diedPos.append( curPoint as XY)
+            }else if isFriend(orgIdx, x: curPoint.x, y: curPoint.y){
                 break
             }else{
                 died = [Int]()
-                diedPos = [(Int, Int)]()
+                diedPos = [XY]()
                 break
             }
         }
         //走査してから削除処理
         for p in diedPos
         {
-            self[p.0, p.1] = -1
+            self[p.x, p.y] = -1
         }
         
         // 囲まれた状態になってるか調査
-        var tmpPos = [(Int, Int)]()
+        var tmpPos = [XY]()
         var tmpBoard = [Bool](count: 81, repeatedValue: false)
-        let vecs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        let vecs:[XY] = [(1, 0), (-1, 0), (0, 1), (0, -1)]
         var died2 = [Int]()
-        tmpPos.append((orgPoint.0 + vec.0, orgPoint.1 + vec.1) as (Int, Int))
+        tmpPos.append((orgPoint.x + vec.x, orgPoint.y + vec.y) as XY)
         while tmpPos.count > 0
         {
             curPoint = tmpPos.removeLast()
             if !isOutOfRange(curPoint)
             {
-                if self[curPoint.0, curPoint.1] == -1
+                if self[curPoint.x, curPoint.y] == -1
                 {
-                    diedPos = [(Int, Int)]()
+                    diedPos = [XY]()
                     died2 = [Int]()
                     break
-                } else if !isFriend(orgIdx, x: curPoint.0, y: curPoint.1) {
-                    died2.append(self[curPoint.0, curPoint.1])
+                } else if !isFriend(orgIdx, x: curPoint.x, y: curPoint.y) {
+                    died2.append(self[curPoint.x, curPoint.y])
                     for v in vecs
                     {
-                        if !isOutOfRange((curPoint.0 + v.0, curPoint.1 + v.1)) &&
-                            !tmpBoard[curPoint.0 + v.0 + (curPoint.1 + v.1) * 9]
+                        if !isOutOfRange((curPoint.x + v.x, curPoint.y + v.y)) &&
+                            !tmpBoard[curPoint.x + v.x + (curPoint.y + v.y) * 9]
                         {
-                            tmpPos.append((curPoint.0 + v.0, curPoint.1 + v.1))
+                            tmpPos.append((curPoint.x + v.x, curPoint.y + v.y))
                         }
                     }
                 }
-                tmpBoard[curPoint.0 + curPoint.1 * 9] = true
+                tmpBoard[curPoint.x + curPoint.y * 9] = true
             }
         }
         //同様に走査してから削除処理
         for p in diedPos
         {
-            self[p.0, p.1] = -1
+            self[p.x, p.y] = -1
         }
         return died + died2
     }
     
-    func isOutOfRange(pos:(Int, Int)) -> Bool
+    func isOutOfRange(pos:XY) -> Bool
     {
-        let idx = pos.0 + pos.1 * 9
+        let idx = pos.x + pos.y * 9
         if idx >= 0 && idx < 81
         {
             return false
@@ -241,13 +243,13 @@ class HasamiShogi {
         return false
     }
     
-    func getCandidatePositions(x :Int, y: Int) -> [(Int, Int)]
+    func getCandidatePositions(x :Int, y: Int) -> [XY]
     {
         if self[x, y] == -1
         {
             return []
         }
-        var pos_ary:[(Int, Int)] = [(Int, Int)]()
+        var pos_ary:[XY] = [XY]()
         pos_ary.append((x, y))
         
         var i = 1
@@ -255,7 +257,7 @@ class HasamiShogi {
         {
             if self[x + i, y] == -1
             {
-                pos_ary.append (x+i, y)
+                pos_ary.append((x+i, y))
             }else{
                 break
             }
@@ -266,7 +268,7 @@ class HasamiShogi {
         {
             if self[x - i, y] == -1
             {
-                pos_ary.append (x-i, y)
+                pos_ary.append((x-i, y:y))
             }else{
                 break
             }
@@ -277,7 +279,7 @@ class HasamiShogi {
         {
             if self[x, y + i] == -1
             {
-                pos_ary.append (x, y+i)
+                pos_ary.append((x, y:y+i))
             }else{
                 break
             }
@@ -288,7 +290,7 @@ class HasamiShogi {
         {
             if self[x, y-i] == -1
             {
-                pos_ary.append (x, y-i)
+                pos_ary.append((x, y-i))
             }else{
                 break
             }
